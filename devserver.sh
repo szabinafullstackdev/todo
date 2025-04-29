@@ -1,3 +1,4 @@
 #!/bin/sh
-#source .venv/bin/activate
+# Activate the virtual environment
+source .venv/bin/activate
 python main.py

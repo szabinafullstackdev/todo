@@ -1,61 +1,33 @@
-def megjelenit_udvozlo_uzenet():
-    """Megjeleníti az üdvözlő üzenetet a felhasználónak."""
-    print("Üdvözöllek a teendő alkalmazásban!")
-    print("Kérlek, válassz a menüpontok közül:")
-    print("1. Új teendő hozzáadása")
-    print("2. Teendők listázása")
-    print("3. Teendő törlése")
-    print("4. Kilépés")
+from flask import Flask, render_template, request, redirect, url_for
 
-def uj_teendo_hozzaadasa(teendok):
+app = Flask(__name__)
+
+teendok = []  # A teendők tárolására szolgáló lista
+
+@app.route('/')
+def index():
+    """Megjeleníti a főoldalt a teendők listájával."""
+    return render_template('index.html', teendok=teendok)
+
+@app.route('/add', methods=['POST'])
+def add_teendo():
     """Hozzáad egy új teendőt a listához."""
-    teendo = input("Add meg az új teendőt: ")
-    teendok.append(teendo)
-    print(f"'{teendo}' hozzáadva a teendők listájához.")
+    teendo = request.form.get('teendo')
+    if teendo:
+        teendok.append(teendo)
+    return redirect(url_for('index'))
 
-def teendok_listazasa(teendok):
-    """Listázza a teendők tartalmát."""
-    if not teendok:
-        print("Nincsenek teendők a listában.")
-    else:
-        print("A teendők listája:")
-        for i, teendo in enumerate(teendok):
-            print(f"{i + 1}. {teendo}")
-
-def teendo_torlese(teendok):
+@app.route('/delete/<int:teendo_index>', methods=['POST'])
+def delete_teendo(teendo_index):
     """Töröl egy teendőt a listából."""
-    teendok_listazasa(teendok)
-    if not teendok:
-        return
-    try:
-        torlendo_index = int(input("Add meg a törlendő teendő sorszámát: ")) - 1
-        if 0 <= torlendo_index < len(teendok):
-            torolt_teendo = teendok.pop(torlendo_index)
-            print(f"'{torolt_teendo}' törölve a teendők listájából.")
-        else:
-            print("Érvénytelen sorszám!")
-    except ValueError:
-        print("Érvénytelen bemenet! Számot kell megadni.")
-
-def main():
-    """A fő alkalmazás logikája."""
-    teendok = []  # A teendők tárolására szolgáló lista
-    megjelenit_udvozlo_uzenet()
-
-    while True:
-        valasztas = input("Válassz egy menüpontot (1-4): ")
-
-        if valasztas == "1":
-            uj_teendo_hozzaadasa(teendok)
-        elif valasztas == "2":
-            teendok_listazasa(teendok)
-        elif valasztas == "3":
-            teendo_torlese(teendok)
-        elif valasztas == "4":
-            print("Kilépés az alkalmazásból...")
-            break
-        else:
-            print("Érvénytelen választás. Kérlek, válassz a menüpontok közül (1-4).")
+    if 0 <= teendo_index < len(teendok):
+        teendok.pop(teendo_index)
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

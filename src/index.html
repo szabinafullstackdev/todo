@@ -1,12 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello World</title>
-  </head>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do App</title>
+</head>
+<body>
+    <h1>Teendő App</h1>
 
-  <body>
-    <h1>Hello World</h1>
-  </body>
+    <form action="/add" method="post">
+        <input type="text" name="teendo" placeholder="Új teendő hozzáadása" required>
+        <button type="submit">Hozzáad</button>
+    </form>
+
+    <h2>Aktuális teendők:</h2>
+    <ul>
+        {% if teendok %}
+        {% for teendo in teendok %}
+        <li>
+            {{ teendo }}
+            <form action="/delete/{{ loop.index0 }}" method="post" style="display: inline;">
+                <button type="submit">Törlés</button>
+            </form>
+        </li>
+        {% endfor %}
+        {% else %}
+        <li>Nincsenek teendők.</li>
+        {% endif %}
+    </ul>
+</body>
 </html>
